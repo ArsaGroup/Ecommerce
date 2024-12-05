@@ -10,6 +10,7 @@ use App\Http\Controllers\UserController;
 
 Route::prefix('api')->group(function () {
     Route::middleware('auth:sanctum')->get('/redirect', [HomeController::class, 'redirect']);
+    Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
     // Authentication Routes
     Route::post('/register', [RegisterController::class, 'register']);

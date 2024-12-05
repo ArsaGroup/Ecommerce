@@ -12,6 +12,9 @@ use PDF;
 
 class AdminController extends Controller
 {
+
+
+
     // View categories (API)
     public function view_category()
     {

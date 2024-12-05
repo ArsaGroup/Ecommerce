@@ -69,6 +69,18 @@ class HomeController extends Controller
         }
     }
 
+    public function dashboard(Request $request)
+    {
+        // دسترسی به اطلاعات کاربر احراز هویت شده
+        $user = $request->user();
+
+        // منطق برای نمایش اطلاعات داشبورد
+        // اینجا می‌توانید اطلاعات مرتبط با داشبورد را به‌صورت JSON ارسال کنید
+        return response()->json([
+            'message' => 'Welcome to the Dashboard!',
+            'user' => $user,
+        ]);
+    }
 
     // Product details (API)
     public function product_details($id)
