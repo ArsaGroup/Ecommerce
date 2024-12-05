@@ -944,6 +944,7 @@ form input[type="submit"]:focus {
 }
 
 .cpy_ {
+  width: 100%;
   background: #222;
   text-align: center;
   padding: 20px 0;
@@ -978,4 +979,40 @@ form input[type="submit"]:focus {
 
 .center{
   background-color: #f7444e;
+}
+.comment_era{
+  width: 460px;
+  height: 50px;
+  border: none;
+  border-radius: 90px;
+  outline: none;
+  padding: 65px 25px;
+  background-color: #ffffff;
+  margin-top: 15px;
+  text-align: left
+}
+.comment_text{
+  font-family: "Playfair Display";
+  font-weight: 700;
+  font-size: 40px;
+
+}
+.all_comment{
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 40px;
+  color: #002c3e;
+
+}
+.comment_box{
+  background-color: #dcd9d9;
+  margin-bottom: 20px;
+  padding-left: 30px;
+  border-radius: 80px;
+  width: 1000px;
+  -webkit-border-radius: 80px;
+  -moz-border-radius: 80px;
+  -ms-border-radius: 80px;
+  -o-border-radius: 80px;
+  padding-top: 20px;
 }

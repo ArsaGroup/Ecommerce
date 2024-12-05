@@ -814,7 +814,7 @@
            </div>
         </div>
      </section>
-     <footer>
+     <!-- <footer>
         <div class="container">
            <div class="row">
               
@@ -855,14 +855,93 @@
               </div>
            </div>
         </div>
-     </footer>
-     <div class="cpy_">
-        <p class="mx-auto"> distributed by ecommers shop 
-        </p>
-     </div>
+     </footer> -->
+     <!-- comment -->
+     
+     <div style="text-align: center; background-color: #dcd9d9;">
+        <h1 class="comment_text" style=" text-align: center; padding-top: 20px; padding-bottom: 20px; color: #002c3e;  ">Comments</h1>
+    
+        <form action="http://127.0.0.1:8000/add_comment" method="POST">
+            <input type="hidden" name="_token" value="bgQ8XJnPQTsLLbH8BJDWdsc7nkv0rAYprBrIpqyZ" autocomplete="off">        <textarea class="comment_era"  placeholder="Comment something here" name="comment"></textarea>
+            <br>
+            <input  style="margin-bottom: 20px;"type="submit" class="btn btn-primary" value="comment">
+        </form>
+    </div>
+    
+    <div style="padding-left: 20%;">
+        <h1  class="all_comment" style="font-size: 20px; padding-bottom: 20px;
+        margin-top: 20px;">All Comments</h1>
+    
+    
+        
+            <div class="comment_box">
+                <b>mahsa</b>
+                <p>good</p>
+                <a style="color:#f7444e; " href="javascript:void(0);" onclick="reply(this)" data-commentid="3">Reply</a>
+    
+                
+                                
+                                
+                                
+                                        <div style="padding-left: 3%; padding-top: 10px; padding-bottom: 10px;">
+    
+                            <b>mahsa</b>
+                            <p>not good</p>
+                            <a style="color: #f7444e;" href="javascript:void(0);" onclick="reply(this)" data-commentid="3">Reply</a>
+    
+                        </div>
+                                        </div>
+    
+            <div class="comment_box">
+                <b>mahsa</b>
+                <p>second comment</p>
+                <a style="color:#f7444e; " href="javascript:void(0);" onclick="reply(this)" data-commentid="2">Reply</a>
+    
+                
+                                
+                                
+                                        <div style="padding-left: 3%; padding-top: 10px; padding-bottom: 10px;">
+    
+                            <b>mahsa</b>
+                            <p>Agree with you</p>
+                            <a style="color: #f7444e;" href="javascript:void(0);" onclick="reply(this)" data-commentid="2">Reply</a>
+    
+                        </div>
+                                
+                                        </div>
+    
+            <div class="comment_box">
+                <b>mahsa</b>
+                <p>my first comment</p>
+                <a style="color:#f7444e; " href="javascript:void(0);" onclick="reply(this)" data-commentid="1">Reply</a>
+    
+                
+                                        <div style="padding-left: 3%; padding-top: 10px; padding-bottom: 10px;">
+    
+                            <b>mahsa</b>
+                            <p>reply to the first comment</p>
+                            <a style="color:#f7444e;" href="javascript:void(0);" onclick="reply(this)" data-commentid="1">Reply</a>
+    
+                        </div>
+                                
+                                        <div style="padding-left: 3%; padding-top: 10px; padding-bottom: 10px;">
+    
+                            <b>mahsa</b>
+                            <p>Good</p>
+                            <a style="color:#f7444e;" href="javascript:void(0);" onclick="reply(this)" data-commentid="1">Reply</a>
+    
+                        </div>
+                                
+                                
+                                        </div>
+     
    
     
    </div>
+   <div class="cpy_">
+        <p class="mx-auto"> distributed by ecommers shop 
+        </p>
+     </div>
    <script type="text/javascript">
     function reply(caller){
         document.getElementById('commentId').value=$(caller).attr('data-Commentid');
