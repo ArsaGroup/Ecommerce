@@ -1,4 +1,4 @@
-System capabilities for customers
+[System capabilities.pdf](https://github.com/user-attachments/files/18110548/System.capabilities.pdf)System capabilities for customers
 Ability to log in and out of users and register profile information
 Ability to search for products
 Register product orders
@@ -28,3 +28,4 @@ Backend : Mahsa Arjmandfar
 Language and framework and database used : PHP /Laravel framework / Mysql
 Frontend : Arezoo Safari
 Language and technologies used : Html /css /bootstrap /js /jquery 
+[System capabilities.pdf](https://github.com/user-attachments/files/18110563/System.capabilities.pdf)
