@@ -1,4 +1,4 @@
-[System capabilities.pdf](https://github.com/user-attachments/files/18110548/System.capabilities.pdf)System capabilities for customers
+System capabilities for customers
 Ability to log in and out of users and register profile information
 Ability to search for products
 Register product orders
