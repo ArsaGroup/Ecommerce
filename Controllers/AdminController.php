@@ -17,13 +17,13 @@ class AdminController extends Controller implements AdminControllerInterface
     // View categories (API) with Redis caching
     public function view_category()
     {
-        $cachedCategories = Redis::get('categories');
+        $cachedCategories = Redis::get(config('admin.redis_keys.categories'));
 
         if ($cachedCategories) {
             $categories = json_decode($cachedCategories);
         } else {
             $categories = Category::all();
-            Redis::setex('categories', 600, json_encode($categories));
+            Redis::setex(config('admin.redis_keys.categories'), config('admin.cache_expiration'), json_encode($categories));
         }
 
         return response()->json(['categories' => $categories]);
@@ -36,7 +36,7 @@ class AdminController extends Controller implements AdminControllerInterface
         $data->category_name = $request->category;
         $data->save();
 
-        Redis::del('categories');
+        Redis::del(config('admin.redis_keys.categories'));
 
         return response()->json(['message' => 'Category Added Successfully']);
     }
@@ -47,7 +47,7 @@ class AdminController extends Controller implements AdminControllerInterface
         $data = Category::find($id);
         if ($data) {
             $data->delete();
-            Redis::del('categories');
+            Redis::del(config('admin.redis_keys.categories'));
             return response()->json(['message' => 'Category Deleted Successfully']);
         } else {
             return response()->json(['message' => 'Category not found'], 404);
@@ -57,13 +57,13 @@ class AdminController extends Controller implements AdminControllerInterface
     // View products (API) with Redis caching
     public function view_product()
     {
-        $cachedProducts = Redis::get('products');
+        $cachedProducts = Redis::get(config('admin.redis_keys.products'));
 
         if ($cachedProducts) {
             $products = json_decode($cachedProducts);
         } else {
             $products = Product::all();
-            Redis::setex('products', 600, json_encode($products));
+            Redis::setex(config('admin.redis_keys.products'), config('admin.cache_expiration'), json_encode($products));
         }
 
         return response()->json(['products' => $products]);
@@ -79,7 +79,7 @@ class AdminController extends Controller implements AdminControllerInterface
             'quantity' => 'required|integer|min:0',
             'discount' => 'nullable|numeric|min:0',
             'category' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|image|mimes:' . implode(',', config('admin.image.allowed_extensions')) . '|max:' . config('admin.image.max_size'),
         ]);
 
         $product = new Product;
@@ -99,7 +99,7 @@ class AdminController extends Controller implements AdminControllerInterface
 
         $product->save();
 
-        Redis::del('products');
+        Redis::del(config('admin.redis_keys.products'));
 
         return response()->json(['message' => 'Product Added Successfully']);
     }
@@ -107,13 +107,13 @@ class AdminController extends Controller implements AdminControllerInterface
     // Show products (API) with Redis caching
     public function show_product()
     {
-        $products = Redis::get('products');
+        $products = Redis::get(config('admin.redis_keys.products'));
 
         if ($products) {
             $products = json_decode($products);
         } else {
             $products = Product::all();
-            Redis::setex('products', 600, json_encode($products));
+            Redis::setex(config('admin.redis_keys.products'), config('admin.cache_expiration'), json_encode($products));
         }
 
         return response()->json(['products' => $products]);
@@ -125,7 +125,7 @@ class AdminController extends Controller implements AdminControllerInterface
         $product = Product::find($id);
         if ($product) {
             $product->delete();
-            Redis::del('products');
+            Redis::del(config('admin.redis_keys.products'));
             return response()->json(['message' => 'Product Deleted Successfully']);
         } else {
             return response()->json(['message' => 'Product not found'], 404);
@@ -165,7 +165,7 @@ class AdminController extends Controller implements AdminControllerInterface
 
             $product->save();
 
-            Redis::del('products');
+            Redis::del(config('admin.redis_keys.products'));
 
             return response()->json(['message' => 'Product Updated Successfully']);
         } else {
@@ -176,13 +176,13 @@ class AdminController extends Controller implements AdminControllerInterface
     // Get all orders (API) with Redis caching
     public function order()
     {
-        $cachedOrders = Redis::get('orders');
+        $cachedOrders = Redis::get(config('admin.redis_keys.orders'));
 
         if ($cachedOrders) {
             $orders = json_decode($cachedOrders);
         } else {
             $orders = Order::all();
-            Redis::setex('orders', 600, json_encode($orders));
+            Redis::setex(config('admin.redis_keys.orders'), config('admin.cache_expiration'), json_encode($orders));
         }
 
         return response()->json(['orders' => $orders]);
@@ -197,7 +197,7 @@ class AdminController extends Controller implements AdminControllerInterface
             $order->payment_status = 'Paid';
             $order->save();
 
-            Redis::del('orders');
+            Redis::del(config('admin.redis_keys.orders'));
 
             return response()->json(['message' => 'Order Delivered Successfully']);
         } else {
@@ -222,14 +222,13 @@ class AdminController extends Controller implements AdminControllerInterface
     {
         $order = Order::find($id);
         if ($order) {
-            $details = [
-                'greeting' => $request->greeting,
-                'firstline' => $request->firstline,
-                'body' => $request->body,
-                'button' => $request->button,
-                'url' => $request->url,
-                'lastline' => $request->lastline,
-            ];
+            $details = config('admin.notification');
+            $details['greeting'] = $request->greeting;
+            $details['firstline'] = $request->firstline;
+            $details['body'] = $request->body;
+            $details['button'] = $request->button;
+            $details['url'] = $request->url;
+            $details['lastline'] = $request->lastline;
 
             Notification::send($order, new MyFirstNotification($details));
             return response()->json(['message' => 'User email sent successfully']);

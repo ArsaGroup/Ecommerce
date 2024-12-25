@@ -21,6 +21,9 @@ class RegisterController extends Controller
      */
     public function register(RegisterRequest $request)
     {
+        // Retrieve cache expiration time from config
+        $userCacheExpiration = config('register.user_cache_expiration');
+
         // Check if the user already exists in Redis cache
         $user = Cache::get('user_' . $request->email);
 
@@ -31,22 +34,24 @@ class RegisterController extends Controller
                 "name"     => $request->name,
                 "email"    => $request->email,
                 "password" => Hash::make($request->password),
-                "usertype" => 'user',  // Default value for usertype
+                "usertype" => config('register.default_user_type'),  // Default user type from config
             ]);
 
-            // Cache the user data for 60 minutes (1 hour)
-            Cache::put('user_' . $request->email, $user, 60);
+            // Cache the user data for the configured expiration time
+            Cache::put('user_' . $request->email, $user, $userCacheExpiration);
         }
+
+        // Retrieve token expiration time from config
+        $tokenExpirationTime = config('register.token_expiration_days') * 24 * 60; // Convert days to minutes
 
         // Generate an auth token for the new user
         $token = $user->createToken("auth_token")->plainTextToken;
-        $expirationTime = 60 * 24 * 30; // 30 days expiration time
 
-        // Cache the token for 30 days
-        Cache::put('token_' . $user->id, $token, $expirationTime);
+        // Cache the token for the configured expiration time
+        Cache::put('token_' . $user->id, $token, $tokenExpirationTime);
 
         // Update token expiration date in the database (if needed)
-        $user->tokens()->orderBy('created_at', 'desc')->first()->update(['expires_at' => now()->addMinutes($expirationTime)]);
+        $user->tokens()->orderBy('created_at', 'desc')->first()->update(['expires_at' => now()->addMinutes($tokenExpirationTime)]);
 
         // Fresh the user model (get the latest data)
         $user = $user->fresh();
@@ -55,6 +60,6 @@ class RegisterController extends Controller
         return response()->json([
             'token' => $token,
             'user' => $user,
-        ])->cookie('token', $token, $expirationTime);
+        ])->cookie('token', $token, $tokenExpirationTime);
     }
 }

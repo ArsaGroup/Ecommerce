@@ -22,6 +22,9 @@ class LoginController extends Controller
      */
     public function login(LoginRequest $request)
     {
+        // Retrieve user cache expiration time from config
+        $userCacheExpiration = config('login.user_cache_expiration');
+
         // Check if the user data is in Redis cache
         $user = Cache::get('user_' . $request->email);
 
@@ -34,8 +37,8 @@ class LoginController extends Controller
                 return Helper::errorResponse('User not found');
             }
 
-            // Cache the user data for 60 minutes
-            Cache::put('user_' . $request->email, $user, 60);
+            // Cache the user data for the configured expiration time
+            Cache::put('user_' . $request->email, $user, $userCacheExpiration);
         }
 
         // Check the password validity
@@ -47,19 +50,21 @@ class LoginController extends Controller
             if (!$token) {
                 $token = $user->createToken('login_token')->plainTextToken;
 
-                // Cache the token for 30 days
-                $expirationTime = 60 * 24 * 30; // 30 days expiration time
-                Cache::put('token_' . $user->id, $token, $expirationTime);
+                // Retrieve token expiration time from config
+                $tokenExpirationTime = config('login.token_expiration');
+
+                // Cache the token for the configured expiration time
+                Cache::put('token_' . $user->id, $token, $tokenExpirationTime);
 
                 // Assign the expiration time to the token in the database
-                $user->tokens()->orderBy('created_at', 'desc')->first()->update(['expires_at' => now()->addMinutes($expirationTime)]);
+                $user->tokens()->orderBy('created_at', 'desc')->first()->update(['expires_at' => now()->addMinutes($tokenExpirationTime)]);
             }
 
             // Return token, user details with the token set as a cookie
             return response()->json([
                 'token' => $token,
                 'user' => $user,
-            ])->cookie('token', $token, $expirationTime);
+            ])->cookie('token', $token, $tokenExpirationTime);
         }
 
         return Helper::errorResponse('Invalid credentials');

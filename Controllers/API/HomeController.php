@@ -1,6 +1,6 @@
 <?php
-
 namespace App\Http\Controllers\API;
+
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,15 +19,15 @@ class HomeController extends Controller implements HomeInterface
     // Get all products (API) with Redis caching
     public function index()
     {
-        $product = Cache::remember('products_page_1', 60, function () {
+        $product = Cache::remember('products_page_1', config('settings.cache_expiration'), function () {
             return Product::paginate(10);
         });
 
-        $comment = Cache::remember('comments', 60, function () {
+        $comment = Cache::remember('comments', config('settings.cache_expiration'), function () {
             return Comment::orderby('id', 'desc')->get();
         });
 
-        $reply = Cache::remember('replies', 60, function () {
+        $reply = Cache::remember('replies', config('settings.cache_expiration'), function () {
             return Reply::all();
         });
 
@@ -44,15 +44,15 @@ class HomeController extends Controller implements HomeInterface
         $usertype = Auth::user()->usertype;
 
         if ($usertype == '1') {  // Admin user
-            $total_product = Cache::remember('total_products', 60, function () {
+            $total_product = Cache::remember('total_products', config('settings.cache_expiration'), function () {
                 return Product::all()->count();
             });
 
-            $total_order = Cache::remember('total_orders', 60, function () {
+            $total_order = Cache::remember('total_orders', config('settings.cache_expiration'), function () {
                 return Order::all()->count();
             });
 
-            $total_user = Cache::remember('total_users', 60, function () {
+            $total_user = Cache::remember('total_users', config('settings.cache_expiration'), function () {
                 return User::all()->count();
             });
 
@@ -74,15 +74,15 @@ class HomeController extends Controller implements HomeInterface
                 'total_processing' => $total_processing,
             ]);
         } else {  // Regular user
-            $product = Cache::remember('products_page_1', 60, function () {
+            $product = Cache::remember('products_page_1', config('settings.cache_expiration'), function () {
                 return Product::paginate(10);
             });
 
-            $comment = Cache::remember('comments', 60, function () {
+            $comment = Cache::remember('comments', config('settings.cache_expiration'), function () {
                 return Comment::orderby('id', 'desc')->get();
             });
 
-            $reply = Cache::remember('replies', 60, function () {
+            $reply = Cache::remember('replies', config('settings.cache_expiration'), function () {
                 return Reply::all();
             });
 
@@ -107,7 +107,7 @@ class HomeController extends Controller implements HomeInterface
     // Product details (API) with Redis caching
     public function product_details($id)
     {
-        $product = Cache::remember("product_details_{$id}", 60, function () use ($id) {
+        $product = Cache::remember("product_details_{$id}", config('settings.cache_expiration'), function () use ($id) {
             return Product::findOrFail($id);
         });
 
@@ -132,7 +132,7 @@ class HomeController extends Controller implements HomeInterface
     // Show cart (API) with Redis caching
     public function show_cart()
     {
-        $cartItems = Cache::remember('cart_items', 60, function () {
+        $cartItems = Cache::remember('cart_items', config('settings.cache_expiration'), function () {
             return Cart::all();
         });
 
@@ -153,7 +153,7 @@ class HomeController extends Controller implements HomeInterface
     // Place order (API) with Redis caching
     public function cash_order()
     {
-        $cartItems = Cache::remember('cart_items', 60, function () {
+        $cartItems = Cache::remember('cart_items', config('settings.cache_expiration'), function () {
             return Cart::all();
         });
 
@@ -176,7 +176,7 @@ class HomeController extends Controller implements HomeInterface
     // Stripe payment (API) with Redis caching
     public function stripePost(Request $request, $totalprice)
     {
-        Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+        Stripe\Stripe::setApiKey(config('services.stripe.secret'));
         Stripe\Charge::create([
             "amount" => $totalprice * 100,
             "currency" => "usd",
@@ -184,7 +184,7 @@ class HomeController extends Controller implements HomeInterface
             "description" => "Thanks for payment."
         ]);
 
-        $cartItems = Cache::remember('cart_items', 60, function () {
+        $cartItems = Cache::remember('cart_items', config('settings.cache_expiration'), function () {
             return Cart::all();
         });
 
@@ -207,7 +207,7 @@ class HomeController extends Controller implements HomeInterface
     // Show user's orders (API) with Redis caching
     public function show_order()
     {
-        $orders = Cache::remember('user_orders', 60, function () {
+        $orders = Cache::remember('user_orders', config('settings.cache_expiration'), function () {
             return Order::all();
         });
 
@@ -257,7 +257,7 @@ class HomeController extends Controller implements HomeInterface
         $search_text = $request->search;
         $cacheKey = 'product_search_' . md5($search_text);
 
-        $products = Cache::remember($cacheKey, 60, function () use ($search_text) {
+        $products = Cache::remember($cacheKey, config('settings.cache_expiration'), function () use ($search_text) {
             return Product::where('title', 'LIKE', "%$search_text%")
                 ->orWhere('category', 'LIKE', "%$search_text%")
                 ->paginate(10);
@@ -266,19 +266,18 @@ class HomeController extends Controller implements HomeInterface
         return response()->json($products);
     }
 
-    // Product function with Redis caching
+    // Get all products (API) with Redis caching
     public function product()
     {
-        // Cache products, comments, and replies
-        $products = Cache::remember('products_page_1', 60, function () {
+        $products = Cache::remember('products_page_1', config('settings.cache_expiration'), function () {
             return Product::paginate(10);
         });
 
-        $comments = Cache::remember('comments', 60, function () {
+        $comments = Cache::remember('comments', config('settings.cache_expiration'), function () {
             return Comment::orderBy('id', 'desc')->get();
         });
 
-        $replies = Cache::remember('replies', 60, function () {
+        $replies = Cache::remember('replies', config('settings.cache_expiration'), function () {
             return Reply::all();
         });
 
@@ -286,6 +285,7 @@ class HomeController extends Controller implements HomeInterface
             'products' => $products,
             'comments' => $comments,
             'replies' => $replies,
-        ], 200); // 200 indicates success in API response
+        ]);
     }
 }
+
