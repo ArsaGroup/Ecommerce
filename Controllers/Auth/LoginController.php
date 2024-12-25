@@ -8,6 +8,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cache;
 
 class LoginController extends Controller
 {
@@ -21,17 +22,40 @@ class LoginController extends Controller
      */
     public function login(LoginRequest $request)
     {
-        $user = User::where('email', $request->email)->first();
+        // Check if the user data is in Redis cache
+        $user = Cache::get('user_' . $request->email);
 
+        // If user not found in cache, fetch from DB and cache
+        if (!$user) {
+            $user = User::where('email', $request->email)->first();
+
+            // If user doesn't exist in DB, return error
+            if (!$user) {
+                return Helper::errorResponse('User not found');
+            }
+
+            // Cache the user data for 60 minutes
+            Cache::put('user_' . $request->email, $user, 60);
+        }
+
+        // Check the password validity
         if (Hash::check($request->password, $user->password)) {
-            $token = $user->createToken('login_token')->plainTextToken;
+            // Check if the token is cached for the user
+            $token = Cache::get('token_' . $user->id);
 
-            // assign token expiration date
-            $expirationTime = 60 * 24 * 30; // 30 days expiration time
-            $user->tokens()->orderBy('created_at', 'desc')->first()->update(['expires_at' => now()->addMinutes($expirationTime)]);
-            $user = $user->fresh();
+            // If no token is cached, create a new one and store it in Redis
+            if (!$token) {
+                $token = $user->createToken('login_token')->plainTextToken;
 
-            // return token, details with cookie
+                // Cache the token for 30 days
+                $expirationTime = 60 * 24 * 30; // 30 days expiration time
+                Cache::put('token_' . $user->id, $token, $expirationTime);
+
+                // Assign the expiration time to the token in the database
+                $user->tokens()->orderBy('created_at', 'desc')->first()->update(['expires_at' => now()->addMinutes($expirationTime)]);
+            }
+
+            // Return token, user details with the token set as a cookie
             return response()->json([
                 'token' => $token,
                 'user' => $user,

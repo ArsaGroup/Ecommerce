@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class LogoutController extends Controller
 {
@@ -27,10 +28,16 @@ class LogoutController extends Controller
             ], 404);
         }
 
-        // delete the teken
-        $request->user()->currentAccessToken()->delete();
+        // Delete the token from the Redis cache
+        $cacheTokenKey = 'token_' . $user->id;
+        if (Cache::has($cacheTokenKey)) {
+            Cache::forget($cacheTokenKey); // Remove token from Redis
+        }
 
-        // Delete expired tokens also
+        // Delete the user's current access token from the database
+        $user->currentAccessToken()->delete();
+
+        // Optionally, you can also delete expired tokens from the database
         // $user->tokens()->where('expires_at', '<', Carbon::now())->delete();
 
         return Helper::successResponse("Logged out successfully!");
