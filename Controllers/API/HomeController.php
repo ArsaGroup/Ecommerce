@@ -1,6 +1,6 @@
 <?php
-namespace App\Http\Controllers\API;
 
+namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -12,8 +12,9 @@ use App\Models\Reply;
 use Illuminate\Support\Facades\Auth;
 use Stripe;
 use Illuminate\Support\Facades\Cache;
+use App\Http\Interfaces\HomeInterface;
 
-class HomeController extends Controller
+class HomeController extends Controller implements HomeInterface
 {
     // Get all products (API) with Redis caching
     public function index()
@@ -264,6 +265,7 @@ class HomeController extends Controller
 
         return response()->json($products);
     }
+
     // Product function with Redis caching
     public function product()
     {

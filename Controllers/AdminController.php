@@ -10,20 +10,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 use PDF;
 use Illuminate\Support\Facades\Redis;
+use App\Http\Interfaces\AdminControllerInterface;
 
-class AdminController extends Controller
+class AdminController extends Controller implements AdminControllerInterface
 {
     // View categories (API) with Redis caching
     public function view_category()
     {
-        // Try to fetch categories from cache
         $cachedCategories = Redis::get('categories');
 
         if ($cachedCategories) {
-            // If categories are cached, return them
             $categories = json_decode($cachedCategories);
         } else {
-            // Otherwise, fetch from the database and cache for 10 minutes
             $categories = Category::all();
             Redis::setex('categories', 600, json_encode($categories));
         }
@@ -38,7 +36,6 @@ class AdminController extends Controller
         $data->category_name = $request->category;
         $data->save();
 
-        // Clear the category cache after adding a new category
         Redis::del('categories');
 
         return response()->json(['message' => 'Category Added Successfully']);
@@ -50,8 +47,6 @@ class AdminController extends Controller
         $data = Category::find($id);
         if ($data) {
             $data->delete();
-
-            // Clear the category cache after deleting a category
             Redis::del('categories');
             return response()->json(['message' => 'Category Deleted Successfully']);
         } else {
@@ -62,14 +57,11 @@ class AdminController extends Controller
     // View products (API) with Redis caching
     public function view_product()
     {
-        // Try to fetch categories from cache
         $cachedProducts = Redis::get('products');
 
         if ($cachedProducts) {
-            // If products are cached, return them
             $products = json_decode($cachedProducts);
         } else {
-            // Otherwise, fetch from the database and cache for 10 minutes
             $products = Product::all();
             Redis::setex('products', 600, json_encode($products));
         }
@@ -90,7 +82,6 @@ class AdminController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        // Create new product
         $product = new Product;
         $product->title = $request->title;
         $product->description = $request->description;
@@ -99,7 +90,6 @@ class AdminController extends Controller
         $product->discount_price = $request->discount;
         $product->category = $request->category;
 
-        // Handle image upload
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imagename = time() . '.' . $image->getClientOriginalExtension();
@@ -107,10 +97,8 @@ class AdminController extends Controller
             $product->image = $imagename;
         }
 
-        // Save product in the database
         $product->save();
 
-        // Clear the product cache after adding a new product
         Redis::del('products');
 
         return response()->json(['message' => 'Product Added Successfully']);
@@ -122,10 +110,8 @@ class AdminController extends Controller
         $products = Redis::get('products');
 
         if ($products) {
-            // If products are cached, return them
             $products = json_decode($products);
         } else {
-            // Otherwise, fetch from the database and cache for 10 minutes
             $products = Product::all();
             Redis::setex('products', 600, json_encode($products));
         }
@@ -139,8 +125,6 @@ class AdminController extends Controller
         $product = Product::find($id);
         if ($product) {
             $product->delete();
-
-            // Clear the product cache after deleting a product
             Redis::del('products');
             return response()->json(['message' => 'Product Deleted Successfully']);
         } else {
@@ -181,7 +165,6 @@ class AdminController extends Controller
 
             $product->save();
 
-            // Clear the product cache after updating a product
             Redis::del('products');
 
             return response()->json(['message' => 'Product Updated Successfully']);
@@ -193,14 +176,11 @@ class AdminController extends Controller
     // Get all orders (API) with Redis caching
     public function order()
     {
-        // Try to fetch orders from cache
         $cachedOrders = Redis::get('orders');
 
         if ($cachedOrders) {
-            // If orders are cached, return them
             $orders = json_decode($cachedOrders);
         } else {
-            // Otherwise, fetch from the database and cache for 10 minutes
             $orders = Order::all();
             Redis::setex('orders', 600, json_encode($orders));
         }
@@ -217,7 +197,6 @@ class AdminController extends Controller
             $order->payment_status = 'Paid';
             $order->save();
 
-            // Clear the orders cache after updating the order
             Redis::del('orders');
 
             return response()->json(['message' => 'Order Delivered Successfully']);
@@ -252,7 +231,6 @@ class AdminController extends Controller
                 'lastline' => $request->lastline,
             ];
 
-            // Send notification using MyFirstNotification
             Notification::send($order, new MyFirstNotification($details));
             return response()->json(['message' => 'User email sent successfully']);
         }
