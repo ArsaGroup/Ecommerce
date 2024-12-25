@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 use PDF;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Log;
 use App\Http\Interfaces\AdminControllerInterface;
 
 class AdminController extends Controller implements AdminControllerInterface
@@ -21,9 +22,11 @@ class AdminController extends Controller implements AdminControllerInterface
 
         if ($cachedCategories) {
             $categories = json_decode($cachedCategories);
+            Log::info('Fetched categories from Redis cache');
         } else {
             $categories = Category::all();
             Redis::setex(config('admin.redis_keys.categories'), config('admin.cache_expiration'), json_encode($categories));
+            Log::info('Fetched categories from database and cached them in Redis');
         }
 
         return response()->json(['categories' => $categories]);
@@ -37,6 +40,7 @@ class AdminController extends Controller implements AdminControllerInterface
         $data->save();
 
         Redis::del(config('admin.redis_keys.categories'));
+        Log::info('Added new category', ['category_name' => $data->category_name]);
 
         return response()->json(['message' => 'Category Added Successfully']);
     }
@@ -48,8 +52,10 @@ class AdminController extends Controller implements AdminControllerInterface
         if ($data) {
             $data->delete();
             Redis::del(config('admin.redis_keys.categories'));
+            Log::info('Deleted category', ['category_id' => $id, 'category_name' => $data->category_name]);
             return response()->json(['message' => 'Category Deleted Successfully']);
         } else {
+            Log::warning('Attempted to delete non-existing category', ['category_id' => $id]);
             return response()->json(['message' => 'Category not found'], 404);
         }
     }
@@ -61,9 +67,11 @@ class AdminController extends Controller implements AdminControllerInterface
 
         if ($cachedProducts) {
             $products = json_decode($cachedProducts);
+            Log::info('Fetched products from Redis cache');
         } else {
             $products = Product::all();
             Redis::setex(config('admin.redis_keys.products'), config('admin.cache_expiration'), json_encode($products));
+            Log::info('Fetched products from database and cached them in Redis');
         }
 
         return response()->json(['products' => $products]);
@@ -100,6 +108,7 @@ class AdminController extends Controller implements AdminControllerInterface
         $product->save();
 
         Redis::del(config('admin.redis_keys.products'));
+        Log::info('Added new product', ['product_id' => $product->id, 'product_name' => $product->title]);
 
         return response()->json(['message' => 'Product Added Successfully']);
     }
@@ -111,9 +120,11 @@ class AdminController extends Controller implements AdminControllerInterface
 
         if ($products) {
             $products = json_decode($products);
+            Log::info('Fetched products from Redis cache');
         } else {
             $products = Product::all();
             Redis::setex(config('admin.redis_keys.products'), config('admin.cache_expiration'), json_encode($products));
+            Log::info('Fetched products from database and cached them in Redis');
         }
 
         return response()->json(['products' => $products]);
@@ -126,8 +137,10 @@ class AdminController extends Controller implements AdminControllerInterface
         if ($product) {
             $product->delete();
             Redis::del(config('admin.redis_keys.products'));
+            Log::info('Deleted product', ['product_id' => $id, 'product_name' => $product->title]);
             return response()->json(['message' => 'Product Deleted Successfully']);
         } else {
+            Log::warning('Attempted to delete non-existing product', ['product_id' => $id]);
             return response()->json(['message' => 'Product not found'], 404);
         }
     }
@@ -138,8 +151,10 @@ class AdminController extends Controller implements AdminControllerInterface
         $product = Product::find($id);
         if ($product) {
             $category = Category::all();
+            Log::info('Fetching product details for update', ['product_id' => $id]);
             return response()->json(['product' => $product, 'categories' => $category]);
         } else {
+            Log::warning('Attempted to update non-existing product', ['product_id' => $id]);
             return response()->json(['message' => 'Product not found'], 404);
         }
     }
@@ -166,9 +181,11 @@ class AdminController extends Controller implements AdminControllerInterface
             $product->save();
 
             Redis::del(config('admin.redis_keys.products'));
+            Log::info('Updated product details', ['product_id' => $id]);
 
             return response()->json(['message' => 'Product Updated Successfully']);
         } else {
+            Log::warning('Attempted to update non-existing product', ['product_id' => $id]);
             return response()->json(['message' => 'Product not found'], 404);
         }
     }
@@ -180,9 +197,11 @@ class AdminController extends Controller implements AdminControllerInterface
 
         if ($cachedOrders) {
             $orders = json_decode($cachedOrders);
+            Log::info('Fetched orders from Redis cache');
         } else {
             $orders = Order::all();
             Redis::setex(config('admin.redis_keys.orders'), config('admin.cache_expiration'), json_encode($orders));
+            Log::info('Fetched orders from database and cached them in Redis');
         }
 
         return response()->json(['orders' => $orders]);
@@ -198,9 +217,11 @@ class AdminController extends Controller implements AdminControllerInterface
             $order->save();
 
             Redis::del(config('admin.redis_keys.orders'));
+            Log::info('Marked order as delivered', ['order_id' => $id]);
 
             return response()->json(['message' => 'Order Delivered Successfully']);
         } else {
+            Log::warning('Attempted to mark non-existing order as delivered', ['order_id' => $id]);
             return response()->json(['message' => 'Order not found'], 404);
         }
     }
@@ -211,8 +232,10 @@ class AdminController extends Controller implements AdminControllerInterface
         $order = Order::find($id);
         if ($order) {
             $pdf = PDF::loadView('pdf.order', compact('order'));
+            Log::info('Generated order PDF', ['order_id' => $id]);
             return $pdf->download('order_' . $id . '.pdf');
         } else {
+            Log::warning('Attempted to generate PDF for non-existing order', ['order_id' => $id]);
             return response()->json(['message' => 'Order not found'], 404);
         }
     }
@@ -231,8 +254,12 @@ class AdminController extends Controller implements AdminControllerInterface
             $details['lastline'] = $request->lastline;
 
             Notification::send($order, new MyFirstNotification($details));
+            Log::info('Sent user email', ['order_id' => $id]);
+
             return response()->json(['message' => 'User email sent successfully']);
         }
+
+        Log::warning('Attempted to send email for non-existing order', ['order_id' => $id]);
         return response()->json(['message' => 'Order not found'], 404);
     }
 
@@ -241,6 +268,8 @@ class AdminController extends Controller implements AdminControllerInterface
     {
         $query = $request->input('query');
         $products = Product::where('title', 'like', "%$query%")->get();
+        Log::info('Performed product search', ['query' => $query]);
+
         return response()->json($products);
     }
 }

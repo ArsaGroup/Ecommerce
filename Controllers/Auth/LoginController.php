@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
@@ -22,51 +23,72 @@ class LoginController extends Controller
      */
     public function login(LoginRequest $request)
     {
-        // Retrieve user cache expiration time from config
-        $userCacheExpiration = config('login.user_cache_expiration');
+        try {
+            // Retrieve user cache expiration time from config
+            $userCacheExpiration = config('login.user_cache_expiration');
+            Log::info('Login attempt started', ['email' => $request->email]);
 
-        // Check if the user data is in Redis cache
-        $user = Cache::get('user_' . $request->email);
+            // Check if the user data is in Redis cache
+            $user = Cache::get('user_' . $request->email);
 
-        // If user not found in cache, fetch from DB and cache
-        if (!$user) {
-            $user = User::where('email', $request->email)->first();
+            if ($user) {
+                Log::info('User found in cache', ['email' => $request->email]);
+            } else {
+                Log::info('User not found in cache, fetching from database', ['email' => $request->email]);
 
-            // If user doesn't exist in DB, return error
-            if (!$user) {
-                return Helper::errorResponse('User not found');
+                // Fetch user from DB
+                $user = User::where('email', $request->email)->first();
+
+                // If user doesn't exist in DB, return error
+                if (!$user) {
+                    Log::warning('User not found in the database', ['email' => $request->email]);
+                    return Helper::errorResponse('User not found');
+                }
+
+                // Cache the user data for the configured expiration time
+                Cache::put('user_' . $request->email, $user, $userCacheExpiration);
+                Log::info('User data cached for future use', ['email' => $request->email]);
             }
 
-            // Cache the user data for the configured expiration time
-            Cache::put('user_' . $request->email, $user, $userCacheExpiration);
-        }
+            // Check the password validity
+            if (Hash::check($request->password, $user->password)) {
+                Log::info('Password check successful', ['email' => $request->email]);
 
-        // Check the password validity
-        if (Hash::check($request->password, $user->password)) {
-            // Check if the token is cached for the user
-            $token = Cache::get('token_' . $user->id);
+                // Check if the token is cached for the user
+                $token = Cache::get('token_' . $user->id);
 
-            // If no token is cached, create a new one and store it in Redis
-            if (!$token) {
-                $token = $user->createToken('login_token')->plainTextToken;
+                if (!$token) {
+                    Log::info('Token not found in cache, generating new token', ['user_id' => $user->id]);
 
-                // Retrieve token expiration time from config
-                $tokenExpirationTime = config('login.token_expiration');
+                    // If no token is cached, create a new one and store it in Redis
+                    $token = $user->createToken('login_token')->plainTextToken;
 
-                // Cache the token for the configured expiration time
-                Cache::put('token_' . $user->id, $token, $tokenExpirationTime);
+                    // Retrieve token expiration time from config
+                    $tokenExpirationTime = config('login.token_expiration');
 
-                // Assign the expiration time to the token in the database
-                $user->tokens()->orderBy('created_at', 'desc')->first()->update(['expires_at' => now()->addMinutes($tokenExpirationTime)]);
+                    // Cache the token for the configured expiration time
+                    Cache::put('token_' . $user->id, $token, $tokenExpirationTime);
+                    Log::info('Auth token cached for user', ['user_id' => $user->id]);
+
+                    // Assign the expiration time to the token in the database
+                    $user->tokens()->orderBy('created_at', 'desc')->first()->update(['expires_at' => now()->addMinutes($tokenExpirationTime)]);
+                    Log::info('Token expiration updated in database', ['user_id' => $user->id]);
+                }
+
+                // Return token, user details with the token set as a cookie
+                Log::info('Login successful', ['user_id' => $user->id]);
+                return response()->json([
+                    'token' => $token,
+                    'user' => $user,
+                ])->cookie('token', $token, $tokenExpirationTime);
             }
 
-            // Return token, user details with the token set as a cookie
-            return response()->json([
-                'token' => $token,
-                'user' => $user,
-            ])->cookie('token', $token, $tokenExpirationTime);
+            Log::warning('Invalid credentials', ['email' => $request->email]);
+            return Helper::errorResponse('Invalid credentials');
+        } catch (\Exception $e) {
+            // Log the exception error
+            Log::error('Error during login process', ['error' => $e->getMessage(), 'email' => $request->email]);
+            return Helper::errorResponse('An error occurred during login');
         }
-
-        return Helper::errorResponse('Invalid credentials');
     }
 }
