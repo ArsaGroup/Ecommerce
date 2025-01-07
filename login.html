@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register & Login</title>
+    <link rel="stylesheet" href="css/style_login.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+<body>
+    <div class="form">
+        <!-- Tabs for Navigation -->
+        <ul class="tab-group">
+            <li class="tab active"><a href="#signup">Sign Up</a></li>
+            <li class="tab"><a href="#login">Log In</a></li>
+        </ul>
+        
+        <div class="tab-content">
+            <!-- Sign Up Form -->
+            <div id="signup">   
+                <h1>Sign Up for Free</h1>
+                <form id="signup-form">
+                    <div class="field-wrap">
+                        <label for="signup-first-name">
+                            First Name<span class="req">*</span>
+                        </label>
+                        <input id="signup-first-name" name="first_name" type="text" required autocomplete="off" />
+                    </div>
+                    <div class="field-wrap">
+                        <label for="signup-email">
+                            Email Address<span class="req">*</span>
+                        </label>
+                        <input id="signup-email" name="email" type="email" required autocomplete="off" />
+                    </div>
+                    <div class="field-wrap">
+                        <label for="signup-password">
+                            Set A Password<span class="req">*</span>
+                        </label>
+                        <input id="signup-password" name="password" type="password" required autocomplete="off" />
+                    </div>
+                    <div class="field-wrap">
+                        <label for="signup-confirm-password">
+                            Confirm Password<span class="req">*</span>
+                        </label>
+                        <input id="signup-confirm-password" name="confirm_password" type="password" required autocomplete="off" />
+                    </div>
+                    <button type="submit" class="button button-block">Get Started</button>
+                    <div id="signup-error-message" class="error-message"></div> <!-- Error Message -->
+                </form>
+            </div>
+          
+            <!-- Log In Form -->
+            <div id="login">
+                <h1>Log In</h1>
+                <form id="login-form">
+                    <div class="field-wrap">
+                        <label for="login-email">
+                            Email Address<span class="req">*</span>
+                        </label>
+                        <input id="login-email" name="email" type="email" required autocomplete="off" />
+                    </div>
+                    <div class="field-wrap">
+                        <label for="login-password">
+                            Password<span class="req">*</span>
+                        </label>
+                        <input id="login-password" name="password" type="password" required autocomplete="off" />
+                    </div>
+                    <button type="submit" class="button button-block">Log In</button>
+                    <div id="login-error-message" class="error-message"></div> <!-- Error Message -->
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/login.js" defer></script>
+</body>
+</html>
