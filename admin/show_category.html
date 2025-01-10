@@ -1,0 +1,523 @@
+<html lang="en"><head>
+    <!-- Required meta tags -->
+     <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title> Admin</title>
+<link rel="stylesheet" href="https://m3.material.io/styles/icons/applying-icons#7a9ace49-617b-4eb9-afff-ef3f0c1a46e2">
+
+<!-- plugins:css -->
+<link rel="stylesheet" href="materialdesignicons.min.css">
+<link rel="stylesheet" href="vendor.bundle.base.css">
+<!-- endinject -->
+<!-- Plugin css for this page -->
+<link rel="stylesheet" href="jquery-jvectormap.css">
+<link rel="stylesheet" href="flag-icon.min.css">
+<link rel="stylesheet" href="owl.carousel.min.css">
+<link rel="stylesheet" href="owl.theme.default.min.css">
+
+<!-- End plugin css for this page -->
+<!-- inject:css -->
+<!-- endinject -->
+<!-- Layout styles -->
+<link rel="stylesheet" href="style.css">
+<!-- End layout styles -->
+<link rel="shortcut icon" href="favicon.png">
+<link href="bootstrap.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+   <style>/* Make clicks pass-through */
+    /* Style the icon and the notification badge */
+    .mdi-bell {
+            font-size: 2rem; /* Adjust icon size */
+            position: relative;
+        }
+
+        .count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: red; 
+            color: white;
+            border-radius: 50%;
+            padding: 5px;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .count img {
+            width: 16px; /* Adjust image size inside the badge */
+            height: 16px;
+        }
+
+    #nprogress {
+      pointer-events: none;
+    }
+
+    #nprogress .bar {
+      background: var(--livewire-progress-bar-color, #29d);
+
+      position: fixed;
+      z-index: 1031;
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 2px;
+    }
+
+    /* Fancy blur effect */
+    #nprogress .peg {
+      display: block;
+      position: absolute;
+      right: 0px;
+      width: 100px;
+      height: 100%;
+      box-shadow: 0 0 10px var(--livewire-progress-bar-color, #29d), 0 0 5px var(--livewire-progress-bar-color, #29d);
+      opacity: 1.0;
+
+      -webkit-transform: rotate(3deg) translate(0px, -4px);
+          -ms-transform: rotate(3deg) translate(0px, -4px);
+              transform: rotate(3deg) translate(0px, -4px);
+    }
+
+    /* Remove these to get rid of the spinner */
+    #nprogress .spinner {
+      display: block;
+      position: fixed;
+      z-index: 1031;
+      top: 15px;
+      right: 15px;
+    }
+
+    #nprogress .spinner-icon {
+      width: 18px;
+      height: 18px;
+      box-sizing: border-box;
+
+      border: solid 2px transparent;
+      border-top-color: var(--livewire-progress-bar-color, #29d);
+      border-left-color: var(--livewire-progress-bar-color, #29d);
+      border-radius: 50%;
+
+      -webkit-animation: nprogress-spinner 400ms linear infinite;
+              animation: nprogress-spinner 400ms linear infinite;
+    }
+
+    .nprogress-custom-parent {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .nprogress-custom-parent #nprogress .spinner,
+    .nprogress-custom-parent #nprogress .bar {
+      position: absolute;
+    }
+
+    @-webkit-keyframes nprogress-spinner {
+      0%   { -webkit-transform: rotate(0deg); }
+      100% { -webkit-transform: rotate(360deg); }
+    }
+    @keyframes nprogress-spinner {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    </style></head>
+   <body class="font-sans antialiased">
+<div class="container-scroller">
+    <!-- partial:partials/_sidebar.html -->
+    <nav class="sidebar sidebar-offcanvas" id="sidebar">
+    <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
+        <a class="sidebar-brand brand-logo" href="index.html"><img style="width: 50px; height: 50px;" src="data-warehouse.png" alt="logo"></a>
+        <a class="sidebar-brand brand-logo-mini" href="index.html"><img src="logo-mini.svg" alt="logo"></a>
+    </div>
+    <ul class="nav">
+        <li class="nav-item profile">
+            <div class="profile-desc">
+                <div class="profile-pic">
+                    <div class="count-indicator">
+                        
+                        <span class="count bg-success"></span>
+                    </div>
+                    <div class="profile-name">
+                        
+                        <span>Gold Member</span>
+                    </div>
+                </div>
+                   <div class="dropdown-menu dropdown-menu-right sidebar-dropdown preview-list" aria-labelledby="profile-dropdown">
+                    <a href="#" class="dropdown-item preview-item">
+                        <div class="preview-thumbnail">
+                            <div class="preview-icon bg-dark rounded-circle">
+                                <i class="mdi mdi-settings text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="preview-item-content">
+                            <p class="preview-subject ellipsis mb-1 text-small">Account settings</p>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item preview-item">
+                        <div class="preview-thumbnail">
+                            <div class="preview-icon bg-dark rounded-circle">
+                                <i class="mdi mdi-onepassword  text-info"></i>
+                            </div>
+                        </div>
+                        <div class="preview-item-content">
+                            <p class="preview-subject ellipsis mb-1 text-small">Change Password</p>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item preview-item">
+                        <div class="preview-thumbnail">
+                            <div class="preview-icon bg-dark rounded-circle">
+                                <i class="mdi mdi-calendar-today text-success"></i>
+                            </div>
+                        </div>
+                        <div class="preview-item-content">
+                            <p class="preview-subject ellipsis mb-1 text-small">To-do list</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </li>
+        <li class="nav-item nav-category">
+            <span class="nav-link">Navigation</span>
+        </li>
+
+
+        <li class="nav-item menu-items active">
+            <a class="nav-link" href="http://127.0.0.1:8000/redirect">
+              <span class="menu-icon">
+                <i class="mdi mdi-speedometer"></i>
+              </span>
+                <span class="menu-title">Dashboard</span>
+            </a>
+        </li>
+
+
+        <li class="nav-item menu-items">
+            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+              <span class="menu-icon">
+                <i class="mdi mdi-laptop"></i>
+              </span>
+                <span class="menu-title">Products</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="ui-basic">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"> <a class="nav-link" href="http://127.0.0.1:8000/view_product">Add Products</a></li>
+                    <li class="nav-item">
+
+                        <a class="nav-link" href="http://127.0.0.1:8000/show_product">Show Product</a>
+
+                    </li>
+                </ul>
+            </div>
+        </li>
+        <li class="nav-item menu-items">
+            <a class="nav-link" href="http://127.0.0.1:8000/view_category">
+              <span class="menu-icon">
+                <i class="mdi mdi-playlist-play"></i>
+              </span>
+                <span class="menu-title">Category</span>
+            </a>
+        </li>
+
+        <li class="nav-item menu-items">
+            <a class="nav-link" href="http://127.0.0.1:8000/order">
+              <span class="menu-icon">
+                <i class="mdi mdi-playlist-play"></i>
+              </span>
+                <span class="menu-title">Order</span>
+            </a>
+        </li>
+
+    </ul>
+</nav>
+    <!-- partial -->
+        <!-- partial:partials/_navbar.html -->
+    <div class="container-fluid page-body-wrapper">
+    <nav class="navbar p-0 fixed-top d-flex flex-row">
+        <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
+             </div>
+        <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
+            <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+                <span class="mdi mdi-menu"></span>
+            </button>
+            <ul class="navbar-nav w-100">
+                <li class="nav-item w-100">
+                    <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search">
+                        <input type="text" class="form-control" placeholder="Search products">
+                    </form>
+                </li>
+            </ul>
+            
+                     
+
+    
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="iXe0brJK6Qu020FjR036lUc6zecNFNKaCBkgp5cH">
+
+        <title>Laravel</title>
+
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&amp;display=swap" rel="stylesheet">
+
+        <!-- Scripts -->
+        <link rel="preload" as="style" href="app-D_Tcvrq9.css"><link rel="modulepreload" href="app-BmrwFrBv.js"><link rel="stylesheet" href="app-D_Tcvrq9.css" data-navigate-track="reload"><script type="module" src="app-BmrwFrBv.js" data-navigate-track="reload"></script>
+        <!-- Styles -->
+        <!-- Livewire Styles --><style>[wire\:loading][wire\:loading], [wire\:loading\.delay][wire\:loading\.delay], [wire\:loading\.inline-block][wire\:loading\.inline-block], [wire\:loading\.inline][wire\:loading\.inline], [wire\:loading\.block][wire\:loading\.block], [wire\:loading\.flex][wire\:loading\.flex], [wire\:loading\.table][wire\:loading\.table], [wire\:loading\.grid][wire\:loading\.grid], [wire\:loading\.inline-flex][wire\:loading\.inline-flex] {display: none;}[wire\:loading\.delay\.none][wire\:loading\.delay\.none], [wire\:loading\.delay\.shortest][wire\:loading\.delay\.shortest], [wire\:loading\.delay\.shorter][wire\:loading\.delay\.shorter], [wire\:loading\.delay\.short][wire\:loading\.delay\.short], [wire\:loading\.delay\.default][wire\:loading\.delay\.default], [wire\:loading\.delay\.long][wire\:loading\.delay\.long], [wire\:loading\.delay\.longer][wire\:loading\.delay\.longer], [wire\:loading\.delay\.longest][wire\:loading\.delay\.longest] {display: none;}[wire\:offline][wire\:offline] {display: none;}[wire\:dirty]:not(textarea):not(input):not(select) {display: none;}:root {--livewire-progress-bar-color: #2299dd;}[x-cloak] {display: none !important;}</style>
+    
+    
+        <div x-data="{&quot;show&quot;:true,&quot;style&quot;:&quot;success&quot;,&quot;message&quot;:null}" :class="{ 'bg-indigo-500': style == 'success', 'bg-red-700': style == 'danger', 'bg-yellow-500': style == 'warning', 'bg-gray-500': style != 'success' &amp;&amp; style != 'danger' &amp;&amp; style != 'warning'}" style="display: none;" x-show="show &amp;&amp; message" x-on:banner-message.window="
+                style = event.detail.style;
+                message = event.detail.message;
+                show = true;
+            " class="bg-indigo-500">
+    <div class="max-w-screen-xl mx-auto py-2 px-3 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between flex-wrap">
+            <div class="w-0 flex-1 flex items-center min-w-0">
+                <span class="flex p-2 rounded-lg bg-indigo-600" :class="{ 'bg-indigo-600': style == 'success', 'bg-red-600': style == 'danger', 'bg-yellow-600': style == 'warning' }">
+                    <svg x-show="style == 'success'" class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <svg x-show="style == 'danger'" class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="display: none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"></path>
+                    </svg>
+                    <svg x-show="style != 'success' &amp;&amp; style != 'danger' &amp;&amp; style != 'warning'" class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="display: none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"></path>
+                    </svg>
+                    <svg x-show="style == 'warning'" class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="display: none;">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" fill="none"></circle>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4v.01 0 0 "></path>
+                    </svg>
+                </span>
+
+                <p class="ms-3 font-medium text-sm text-white truncate" x-text="message"></p>
+            </div>
+
+            <div class="shrink-0 sm:ms-3">
+                <button type="button" class="-me-1 flex p-2 rounded-md focus:outline-none sm:-me-2 transition hover:bg-indigo-600 focus:bg-indigo-600" :class="{ 'hover:bg-indigo-600 focus:bg-indigo-600': style == 'success', 'hover:bg-red-600 focus:bg-red-600': style == 'danger', 'hover:bg-yellow-600 focus:bg-yellow-600': style == 'warning'}" aria-label="Dismiss" x-on:click="show = false">
+                    <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <div class="">
+            <nav wire:snapshot="{&quot;data&quot;:[],&quot;memo&quot;:{&quot;id&quot;:&quot;kE7EbYJ09UinUIuhGPUX&quot;,&quot;name&quot;:&quot;navigation-menu&quot;,&quot;path&quot;:&quot;redirect&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;en&quot;},&quot;checksum&quot;:&quot;3eec6357d037178e02fad55dbbe6037e161c2d0d2ef4a766e89985556b951816&quot;}" wire:effects="{&quot;listeners&quot;:[&quot;refresh-navigation-menu&quot;]}" wire:id="kE7EbYJ09UinUIuhGPUX" x-data="{ open: false }" class="">
+    <!-- Primary Navigation Menu -->
+    <div class="">
+        <div class="">
+            <div class="flex">
+                <!-- Logo -->
+
+
+                <!-- Navigation Links -->
+
+            </div>
+
+            <div class="hidden sm:flex sm:items-center sm:ms-6">
+                <!-- Teams Dropdown -->
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                <!-- Settings Dropdown -->
+                <div class="ms-3 relative">
+                    <div class="relative" x-data="{ open: false }" @click.away="open = false" @close.stop="open = false">
+    <div @click="open = ! open">
+        <!--[if BLOCK]><![endif]-->                                <span class="inline-flex rounded-md ">
+                                    <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
+                                        admin
+
+                                        <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"></path>
+                                        </svg>
+                                    </button>
+                                </span>
+                            <!--[if ENDBLOCK]><![endif]-->
+    </div>
+
+    <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute z-50 mt-2 w-48 rounded-md shadow-lg ltr:origin-top-right rtl:origin-top-left end-0" @click="open = false" style="display: none;">
+        <div class="rounded-md ring-1 ring-black ring-opacity-5 py-1 bg-white">
+            <!-- Account Management -->
+                            <div class="block px-4 py-2 text-xs text-gray-400">
+                                Manage Account
+                            </div>
+
+                            <a class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out" href="http://127.0.0.1:8000/user/profile">Profile</a>
+
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                            <div class="border-t border-gray-200"></div>
+
+                            <!-- Authentication -->
+                            <form method="POST" action="http://127.0.0.1:8000/logout" x-data="">
+                                <input type="hidden" name="_token" value="iXe0brJK6Qu020FjR036lUc6zecNFNKaCBkgp5cH" autocomplete="off">
+                                <a class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out" href="http://127.0.0.1:8000/logout" @click.prevent="$root.submit();">Log Out</a>
+                            </form>
+        </div>
+    </div>
+</div>
+                </div>
+            </div>
+
+            <!-- Hamburger -->
+            <div class="-me-2 flex items-center sm:hidden">
+                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Responsive Navigation Menu -->
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+        <div class="pt-2 pb-3 space-y-1">
+            <a class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out" href="http://127.0.0.1:8000/dashboard">
+    Dashboard
+</a>
+        </div>
+
+        <!-- Responsive Settings Options -->
+        <div class="pt-4 pb-1 border-t border-gray-200">
+            <div class="flex items-center px-4">
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                <div>
+                    <div class="font-medium text-base text-gray-800">admin</div>
+                    <div class="font-medium text-sm text-gray-500">admin@gmail.come</div>
+                </div>
+            </div>
+
+            <div class="mt-3 space-y-1">
+                <!-- Account Management -->
+                <a class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out" href="http://127.0.0.1:8000/user/profile">
+    Profile
+</a>
+
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                <!-- Authentication -->
+                <form method="POST" action="http://127.0.0.1:8000/logout" x-data="">
+                    <input type="hidden" name="_token" value="iXe0brJK6Qu020FjR036lUc6zecNFNKaCBkgp5cH" autocomplete="off">
+                    <a class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out" href="http://127.0.0.1:8000/logout" @click.prevent="$root.submit();">
+    Log Out
+</a>
+                </form>
+
+                <!-- Team Management -->
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </div>
+        </div>
+    </div>
+</nav>
+
+            <!-- Page Heading -->
+            
+            <!-- Page Content -->
+            <main>
+                
+            </main>
+        </div>
+
+        
+        <!-- Livewire Scripts -->
+<script src="/livewire/livewire.js?id=cc800bf4" data-csrf="iXe0brJK6Qu020FjR036lUc6zecNFNKaCBkgp5cH" data-update-uri="/livewire/update" data-navigate-once="true"></script>
+    
+
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+
+        <!-- partial -->
+    <div class="main-panel">
+        
+        <div class="content-wrapper category ">
+
+             
+            <div>
+                <div class="  div_center ">
+                
+                <form action="http://127.0.0.1:8000/add_category" method="POST">
+
+                    <input type="hidden" name="_token" value="rDz9KgZxsIzIhtkQn255MFa703emd67LeqtEHkxU" autocomplete="off">
+                    <input class="input_color input_category" type="text" name="category" placeholder="add your category" style="border-radius: 1rem;">
+
+                    <input type="submit" class="btn btn-primary" name="submit" value="Add  "style="border-radius:1rem; background-color: #434a54; width: 80px; height:40px" >
+
+                </form>
+            </div>
+                <table class="center ">
+                    <tbody><tr>
+                        
+                    </tr>
+                                         <tr>
+                        <td>short</td>
+                        <td>
+                            <a onclick="return confirm('Are you sure to delete?')" class="btn btn-danger" href="http://127.0.0.1:8000/delete_category/1"style="margin-left: 3rem;" >Delete</a>
+                        </td>
+                    </tr>
+                                         <tr>
+                        <td>Toys</td>
+                        <td>
+                            <a onclick="return confirm('Are you sure to delete?')" class="btn btn-danger" href="http://127.0.0.1:8000/delete_category/2"style="margin-left: 3rem;" >Delete</a>
+                        </td>
+                    </tr>
+                                         <tr>
+                        <td>electronic</td>
+                        <td>
+                            <a onclick="return confirm('Are you sure to delete?')" class="btn btn-danger" href="http://127.0.0.1:8000/delete_category/3" style="margin-left: 3rem;">Delete</a>
+                        </td>
+                    </tr>
+                                     </tbody></table>
+        </div>
+    </div>
+
+    <!-- content-wrapper ends -->
+    <!-- partial:partials/_footer.html -->
+   
+    <!-- partial -->
+</div>
+<!-- main-panel ends -->
+</div>
+<!-- page-body-wrapper ends -->
+
+<!-- container-scroller -->
+<!-- plugins:js -->
+<script src="vendor.bundle.base.js"></script>
+<!-- endinject -->
+<!-- Plugin js for this page -->
+<script src="Chart.min.js"></script>
+<script src="progressbar.min.js"></script>
+<script src="jquery-jvectormap-world-mill-en.js"></script>
+<script src="owl.carousel.min.js"></script>
+<!-- End plugin js for this page -->
+<!-- inject:js -->
+<script src="off-canvas.js"></script>
+<script src="hoverable-collapse.js"></script>
+<script src="misc.js"></script>
+<script src="settings.js"></script>
+<script src="todolist.js"></script>
+<!-- endinject -->
+<!-- Custom js for this page -->
+<script src="dashboard.js"></script>
+<!-- End custom js for this page -->
+    
+
+<div id="veepn-breach-alert"></div><style>@font-face{font-family:FigtreeVF;src:url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) format("woff2 supports variations"),url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) format("woff2-variations");font-weight:100 1000;font-display:swap}</style>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="bootstrap.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="logo.svg"></script>
+</body></html>
